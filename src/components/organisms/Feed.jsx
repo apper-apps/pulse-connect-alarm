@@ -90,7 +90,7 @@ if (posts.length === 0) {
         <h2 className="text-xl font-display font-semibold text-gray-800">Latest Posts</h2>
       </div>
       <div className={cn("space-y-6", className)}>
-        {posts.map((post, index) => (
+{posts.map((post, index) => (
           <motion.div
             key={post.id}
             initial={{ opacity: 0, y: 20 }}
