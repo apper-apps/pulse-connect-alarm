@@ -44,15 +44,13 @@ const [posts, setPosts] = useState([]);
       console.error("Error liking post:", err);
     }
   };
-
 const handleComment = async (postId) => {
-    const post = posts.find(p => p.id === postId);
+    const post = posts.find(p => p.Id === postId);
     if (post) {
       setCommentModal({ isOpen: true, post });
     }
     onPostComment?.(postId);
   };
-
   const handleShare = async (postId) => {
     try {
       await PostService.share(postId);
