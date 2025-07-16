@@ -5,6 +5,7 @@ import SearchBar from "@/components/molecules/SearchBar";
 import Avatar from "@/components/atoms/Avatar";
 import Button from "@/components/atoms/Button";
 import ApperIcon from "@/components/ApperIcon";
+import NotificationDropdown from "@/components/molecules/NotificationDropdown";
 
 const Header = ({ 
   className, 
@@ -71,17 +72,9 @@ const Header = ({
             >
               <ApperIcon name="Plus" className="h-4 w-4" />
               <span className="hidden sm:inline">Create Post</span>
-            </Button>
+</Button>
             
-            <motion.button
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ApperIcon name="Bell" className="h-5 w-5 text-gray-600" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full"></div>
-            </motion.button>
-            
+            <NotificationDropdown />
             <Avatar 
               src={currentUser?.avatar} 
               alt={currentUser?.displayName} 
