@@ -49,7 +49,7 @@ const ChatModal = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendMessage = async (e) => {
+const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || sending) return;
 
@@ -57,17 +57,18 @@ const ChatModal = ({
     setNewMessage("");
     setSending(true);
 
+    // Declare optimisticMessage in function scope so it's accessible in both try and catch
+    const optimisticMessage = {
+      Id: Date.now(),
+      senderId: currentUser.Id,
+      receiverId: selectedUser.Id,
+      message: messageText,
+      timestamp: new Date().toISOString(),
+      isRead: false
+    };
+
     try {
       // Optimistically add message to UI
-      const optimisticMessage = {
-        Id: Date.now(),
-        senderId: currentUser.Id,
-        receiverId: selectedUser.Id,
-        message: messageText,
-        timestamp: new Date().toISOString(),
-        isRead: false
-      };
-      
       setMessages(prev => [...prev, optimisticMessage]);
 
       // Send to server
