@@ -9,6 +9,7 @@ const ActiveUsers = ({
   className, 
   activeUsers = [],
   onUserClick,
+  onChatClick,
   ...props 
 }) => {
   return (
@@ -55,14 +56,12 @@ const ActiveUsers = ({
                 {user.isOnline ? "Active now" : formatDistanceToNow(new Date(user.lastSeen), { addSuffix: true })}
               </p>
             </div>
-            <ApperIcon 
+<ApperIcon 
               name="MessageCircle" 
               className="h-4 w-4 text-gray-400 hover:text-primary cursor-pointer transition-colors" 
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("Chat with user:", user.Id, user.displayName);
-                // TODO: Replace with actual chat functionality
-                // onChatClick?.(user.Id);
+                onChatClick?.(user);
               }}
             />
           </motion.div>

@@ -9,11 +9,14 @@ import TrendingCard from "@/components/organisms/TrendingCard";
 import SuggestedUsers from "@/components/organisms/SuggestedUsers";
 import ActiveUsers from "@/components/organisms/ActiveUsers";
 import CreatePostModal from "@/components/organisms/CreatePostModal";
+import ChatModal from "@/components/organisms/ChatModal";
 import { useHomeData } from "@/hooks/useHomeData";
 
 const Home = ({ className, ...props }) => {
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [followingUsers, setFollowingUsers] = useState([]);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [selectedChatUser, setSelectedChatUser] = useState(null);
   
   const {
     currentUser,
@@ -55,10 +58,14 @@ const Home = ({ className, ...props }) => {
     console.log("Trend clicked:", hashtag);
   };
 
-  const handleUserClick = (userId) => {
+const handleUserClick = (userId) => {
     console.log("User clicked:", userId);
   };
 
+  const handleChatClick = (user) => {
+    setSelectedChatUser(user);
+    setIsChatModalOpen(true);
+  };
   return (
     <div className={cn("min-h-screen bg-background", className)} {...props}>
       <Header 
@@ -98,18 +105,26 @@ const Home = ({ className, ...props }) => {
               onFollowToggle={handleFollowToggle}
               followingUsers={followingUsers}
             />
-            <ActiveUsers 
+<ActiveUsers 
               activeUsers={activeUsers}
               onUserClick={handleUserClick}
+              onChatClick={handleChatClick}
             />
           </div>
         </div>
       </div>
 
-      <CreatePostModal
+<CreatePostModal
         isOpen={isCreatePostOpen}
         onClose={() => setIsCreatePostOpen(false)}
         onPostCreated={handlePostCreated}
+        currentUser={currentUser}
+      />
+
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        selectedUser={selectedChatUser}
         currentUser={currentUser}
       />
     </div>
