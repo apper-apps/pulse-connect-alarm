@@ -35,7 +35,7 @@ const PostActions = ({
   };
 
 const handleComment = () => {
-    onComment?.(post.Id);
+    onComment?.();
   };
 
   const handleShare = () => {

@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/utils/cn";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import Avatar from "@/components/atoms/Avatar";
 import PostActions from "@/components/molecules/PostActions";
 import ApperIcon from "@/components/ApperIcon";
-
+import TextArea from "@/components/atoms/TextArea";
+import { Button } from "@/components/atoms/Button";
+import { toast } from "react-toastify";
 const PostCard = ({ 
   className, 
   post, 
@@ -14,8 +16,39 @@ const PostCard = ({
   onShare,
   ...props 
 }) => {
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const timeAgo = formatDistanceToNow(new Date(post.timestamp), { addSuffix: true });
 
+  const handleCommentToggle = () => {
+    setShowCommentForm(!showCommentForm);
+    if (!showCommentForm) {
+      setCommentText("");
+    }
+  };
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      await onComment(post.Id, { content: commentText.trim() });
+      setCommentText("");
+      setShowCommentForm(false);
+      toast.success("Comment added successfully!");
+    } catch (error) {
+      toast.error("Failed to add comment. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCommentCancel = () => {
+    setCommentText("");
+    setShowCommentForm(false);
+  };
   return (
     <motion.article
       className={cn(
@@ -100,9 +133,58 @@ const PostCard = ({
       <PostActions
         post={post}
         onLike={onLike}
-        onComment={onComment}
+        onComment={handleCommentToggle}
         onShare={onShare}
       />
+
+      {/* Inline Comment Form */}
+      {showCommentForm && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-4 pt-4 border-t border-gray-100"
+        >
+          <form onSubmit={handleCommentSubmit} className="space-y-3">
+            <div className="flex items-start space-x-3">
+              <Avatar 
+                src="/api/placeholder/32/32" 
+                alt="Your avatar" 
+                size="sm"
+              />
+              <div className="flex-1">
+                <TextArea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="Write a comment..."
+                  rows={3}
+                  className="resize-none"
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleCommentCancel}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={!commentText.trim() || isSubmitting}
+              >
+                {isSubmitting ? "Posting..." : "Post Comment"}
+              </Button>
+            </div>
+          </form>
+        </motion.div>
+      )}
     </motion.article>
   );
 };
