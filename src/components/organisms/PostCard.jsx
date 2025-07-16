@@ -6,9 +6,9 @@ import Avatar from "@/components/atoms/Avatar";
 import PostActions from "@/components/molecules/PostActions";
 import ApperIcon from "@/components/ApperIcon";
 import TextArea from "@/components/atoms/TextArea";
-import { Button } from "@/components/atoms/Button";
+import Button from "@/components/atoms/Button";
 import { toast } from "react-toastify";
-const PostCard = ({ 
+const PostCard = ({
   className, 
   post, 
   onLike, 
