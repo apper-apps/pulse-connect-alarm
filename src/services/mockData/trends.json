@@ -1,0 +1,62 @@
+[
+  {
+    "hashtag": "TechTrends2024",
+    "postCount": 15420,
+    "trend": "up",
+    "percentChange": 23.5
+  },
+  {
+    "hashtag": "WebDevelopment",
+    "postCount": 8932,
+    "trend": "up",
+    "percentChange": 12.3
+  },
+  {
+    "hashtag": "DesignSystem",
+    "postCount": 6754,
+    "trend": "stable",
+    "percentChange": 0
+  },
+  {
+    "hashtag": "ReactJS",
+    "postCount": 5621,
+    "trend": "up",
+    "percentChange": 8.7
+  },
+  {
+    "hashtag": "UIDesign",
+    "postCount": 4398,
+    "trend": "down",
+    "percentChange": -3.2
+  },
+  {
+    "hashtag": "MachineLearning",
+    "postCount": 3856,
+    "trend": "up",
+    "percentChange": 18.9
+  },
+  {
+    "hashtag": "SocialMedia",
+    "postCount": 3274,
+    "trend": "stable",
+    "percentChange": 0
+  },
+  {
+    "hashtag": "StartupLife",
+    "postCount": 2891,
+    "trend": "up",
+    "percentChange": 15.6
+  },
+  {
+    "hashtag": "CodeReview",
+    "postCount": 2543,
+    "trend": "down",
+    "percentChange": -5.8
+  },
+  {
+    "hashtag": "Innovation",
+    "postCount": 2187,
+    "trend": "up",
+    "percentChange": 9.4
+  }
+]
