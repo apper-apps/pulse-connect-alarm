@@ -33,6 +33,21 @@ export const StoryService = {
     if (story && !story.viewers.includes(userId)) {
       story.viewers.push(userId);
     }
-    return { success: true };
+return { success: true };
+  },
+
+  async getStorySequence(storyId) {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const allStories = await this.getAll();
+    const currentIndex = allStories.findIndex(story => story.Id === storyId);
+    
+    if (currentIndex === -1) return null;
+    
+    return {
+      current: allStories[currentIndex],
+      previous: currentIndex > 0 ? allStories[currentIndex - 1] : null,
+      next: currentIndex < allStories.length - 1 ? allStories[currentIndex + 1] : null,
+      allStories
+    };
   }
 };

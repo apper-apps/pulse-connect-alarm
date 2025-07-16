@@ -2,12 +2,18 @@ import React from "react";
 import { cn } from "@/utils/cn";
 import { motion } from "framer-motion";
 import StoryItem from "@/components/molecules/StoryItem";
+import StoryModal from "@/components/organisms/StoryModal";
 import ApperIcon from "@/components/ApperIcon";
 
 const StoriesBar = ({ 
   className, 
   stories = [],
   onStoryClick,
+  currentUser,
+  showStoryModal,
+  selectedStoryId,
+  onStoryModalClose,
+  onStoryViewed,
   ...props 
 }) => {
   return (
@@ -39,8 +45,17 @@ const StoriesBar = ({
               isViewed={story.viewers?.includes("currentUser")}
             />
           </motion.div>
-        ))}
+))}
       </div>
+      
+      <StoryModal
+        isOpen={showStoryModal}
+        onClose={onStoryModalClose}
+        storyId={selectedStoryId}
+        stories={stories}
+        currentUser={currentUser}
+        onStoryViewed={onStoryViewed}
+      />
     </motion.div>
   );
 };

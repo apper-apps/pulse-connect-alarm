@@ -138,3 +138,54 @@
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 400% 100%;
 }
+
+/* Story modal styles */
+.story-modal-overlay {
+  backdrop-filter: blur(8px);
+}
+
+.story-container {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.story-progress {
+  border-radius: 2px;
+}
+
+.transparent-button {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.transparent-button:disabled {
+  cursor: not-allowed;
+}
+
+/* Mobile responsive story modal */
+@media (max-width: 640px) {
+  .story-container {
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+/* Story modal animations */
+@keyframes story-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.story-progress-active {
+  animation: story-progress 5s linear;
+}
+
+/* Touch feedback for mobile */
+@media (hover: none) {
+  .transparent-button:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

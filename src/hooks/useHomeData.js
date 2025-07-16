@@ -13,6 +13,10 @@ export const useHomeData = () => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Story modal state
+  const [showStoryModal, setShowStoryModal] = useState(false);
+  const [selectedStoryId, setSelectedStoryId] = useState(null);
 
   const loadData = async () => {
     try {
@@ -46,13 +50,32 @@ export const useHomeData = () => {
     } finally {
       setLoading(false);
     }
+};
+
+  const handleStoryClick = (storyId) => {
+    setSelectedStoryId(storyId);
+    setShowStoryModal(true);
+  };
+
+  const handleStoryModalClose = () => {
+    setShowStoryModal(false);
+    setSelectedStoryId(null);
+  };
+
+  const handleStoryViewed = (storyId) => {
+    setStories(prevStories => 
+      prevStories.map(story => 
+        story.Id === storyId 
+          ? { ...story, viewers: [...(story.viewers || []), currentUser?.Id || "1"] }
+          : story
+      )
+    );
   };
 
   useEffect(() => {
     loadData();
   }, []);
-
-  return {
+return {
     currentUser,
     stats,
     trends,
@@ -61,6 +84,12 @@ export const useHomeData = () => {
     activeUsers,
     loading,
     error,
-    refetch: loadData
+    refetch: loadData,
+    // Story modal state and handlers
+    showStoryModal,
+    selectedStoryId,
+    handleStoryClick,
+    handleStoryModalClose,
+    handleStoryViewed
   };
 };
