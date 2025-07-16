@@ -51,11 +51,20 @@ const ActiveUsers = ({
               <p className="text-sm font-medium text-gray-900 truncate">
                 {user.displayName}
               </p>
-              <p className="text-xs text-gray-500 truncate">
+<p className="text-xs text-gray-500 truncate">
                 {user.isOnline ? "Active now" : formatDistanceToNow(new Date(user.lastSeen), { addSuffix: true })}
               </p>
             </div>
-            <ApperIcon name="MessageCircle" className="h-4 w-4 text-gray-400" />
+            <ApperIcon 
+              name="MessageCircle" 
+              className="h-4 w-4 text-gray-400 hover:text-primary cursor-pointer transition-colors" 
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Chat with user:", user.Id, user.displayName);
+                // TODO: Replace with actual chat functionality
+                // onChatClick?.(user.Id);
+              }}
+            />
           </motion.div>
         ))}
       </div>
