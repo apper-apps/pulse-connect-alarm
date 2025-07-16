@@ -49,5 +49,27 @@ return { success: true };
       next: currentIndex < allStories.length - 1 ? allStories[currentIndex + 1] : null,
       allStories
     };
+},
+
+  async create(storyData) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const newStory = {
+      Id: Math.max(...storyData.map(s => s.Id)) + 1,
+      ...storyData,
+      timestamp: new Date().toISOString(),
+      viewers: [],
+      isActive: true
+    };
+    
+    storyData.unshift(newStory);
+    
+    // Attach user data
+    const storyWithUser = {
+      ...newStory,
+      user: userData.find(user => user.Id === newStory.userId)
+    };
+    
+    return storyWithUser;
   }
 };

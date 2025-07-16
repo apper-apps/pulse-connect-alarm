@@ -42,7 +42,7 @@ const StoriesBar = ({
             <StoryItem
               story={story}
               onClick={onStoryClick}
-              isViewed={story.viewers?.includes("currentUser")}
+isViewed={story.viewers?.includes(currentUser?.Id?.toString())}
             />
           </motion.div>
 ))}

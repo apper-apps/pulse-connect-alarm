@@ -7,6 +7,7 @@ import TextArea from "@/components/atoms/TextArea";
 import Avatar from "@/components/atoms/Avatar";
 import ApperIcon from "@/components/ApperIcon";
 import { PostService } from "@/services/api/PostService";
+import { StoryService } from "@/services/api/StoryService";
 
 const CreatePostModal = ({ 
   className, 
@@ -16,33 +17,52 @@ const CreatePostModal = ({
   currentUser,
   ...props 
 }) => {
-  const [content, setContent] = useState("");
+const [content, setContent] = useState("");
   const [images, setImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isStoryMode, setIsStoryMode] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!content.trim()) {
-      toast.error("Please write something before posting");
-      return;
+if (isStoryMode) {
+      if (images.length === 0) {
+        toast.error("Please add an image for your story");
+        return;
+      }
+    } else {
+      if (!content.trim()) {
+        toast.error("Please write something before posting");
+        return;
+      }
     }
 
-    try {
+try {
       setIsSubmitting(true);
       
-      const newPost = {
-        content: content.trim(),
-        images: images,
-        hashtags: extractHashtags(content),
-        userId: currentUser?.Id || 1
-      };
+      if (isStoryMode) {
+        const newStory = {
+          imageUrl: images[0],
+          userId: currentUser?.Id || 1
+        };
+        
+        await StoryService.create(newStory);
+        toast.success("Story created successfully!");
+      } else {
+        const newPost = {
+          content: content.trim(),
+          images: images,
+          hashtags: extractHashtags(content),
+          userId: currentUser?.Id || 1
+        };
 
-      await PostService.create(newPost);
-      toast.success("Post created successfully!");
+        await PostService.create(newPost);
+        toast.success("Post created successfully!");
+      }
       
       setContent("");
       setImages([]);
+      setIsStoryMode(false);
       onPostCreated?.();
       onClose();
     } catch (err) {
@@ -80,9 +100,10 @@ const CreatePostModal = ({
     setImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleClose = () => {
+const handleClose = () => {
     setContent("");
     setImages([]);
+    setIsStoryMode(false);
     onClose();
   };
 
@@ -116,8 +137,36 @@ const CreatePostModal = ({
             {...props}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">Create Post</h2>
+<div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center space-x-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {isStoryMode ? "Create Story" : "Create Post"}
+                </h2>
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsStoryMode(false)}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      !isStoryMode 
+                        ? "bg-primary text-white" 
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    Post
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsStoryMode(true)}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      isStoryMode 
+                        ? "bg-primary text-white" 
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    Story
+                  </button>
+                </div>
+              </div>
               <motion.button
                 onClick={handleClose}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -136,14 +185,21 @@ const CreatePostModal = ({
                   alt={currentUser?.displayName} 
                   size="md"
                 />
-                <div className="flex-1">
-                  <TextArea
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder="What's happening?"
-                    rows={4}
-                    className="resize-none border-0 focus:ring-0 p-0 text-lg"
-                  />
+<div className="flex-1">
+                  {!isStoryMode && (
+                    <TextArea
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="What's happening?"
+                      rows={4}
+                      className="resize-none border-0 focus:ring-0 p-0 text-lg"
+                    />
+                  )}
+                  {isStoryMode && (
+                    <div className="text-gray-500 text-lg">
+                      Add an image to create your story
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -174,43 +230,56 @@ const CreatePostModal = ({
               {/* Actions */}
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <div className="flex items-center space-x-4">
-                  <motion.label
+<motion.label
                     htmlFor="image-upload"
                     className="flex items-center space-x-2 text-primary hover:text-primary/80 cursor-pointer"
                     whileHover={{ scale: 1.05 }}
                   >
                     <ApperIcon name="Image" className="h-5 w-5" />
-                    <span className="text-sm font-medium">Photo</span>
+                    <span className="text-sm font-medium">
+                      {isStoryMode ? "Add Image" : "Photo"}
+                    </span>
                   </motion.label>
-                  <input
+<input
                     id="image-upload"
                     type="file"
                     accept="image/*"
-                    multiple
+                    multiple={!isStoryMode}
                     onChange={handleImageUpload}
                     className="hidden"
                   />
                   
-                  <motion.button
-                    type="button"
-                    className="flex items-center space-x-2 text-primary hover:text-primary/80"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ApperIcon name="Hash" className="h-5 w-5" />
-                    <span className="text-sm font-medium">Hashtag</span>
-                  </motion.button>
+{!isStoryMode && (
+                    <motion.button
+                      type="button"
+                      className="flex items-center space-x-2 text-primary hover:text-primary/80"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <ApperIcon name="Hash" className="h-5 w-5" />
+                      <span className="text-sm font-medium">Hashtag</span>
+                    </motion.button>
+                  )}
                 </div>
 
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm text-gray-500">
-                    {content.length}/280
-                  </span>
+<div className="flex items-center space-x-3">
+                  {!isStoryMode && (
+                    <span className="text-sm text-gray-500">
+                      {content.length}/280
+                    </span>
+                  )}
                   <Button
                     type="submit"
-                    disabled={!content.trim() || isSubmitting}
+                    disabled={
+                      isStoryMode 
+                        ? images.length === 0 || isSubmitting
+                        : !content.trim() || isSubmitting
+                    }
                     className="px-6"
                   >
-                    {isSubmitting ? "Posting..." : "Post"}
+                    {isSubmitting 
+                      ? (isStoryMode ? "Creating..." : "Posting...") 
+                      : (isStoryMode ? "Create Story" : "Post")
+                    }
                   </Button>
                 </div>
               </div>

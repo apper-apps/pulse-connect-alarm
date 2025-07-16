@@ -37,6 +37,8 @@ const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [searchError, setSearchError] = useState(null);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [selectedTrend, setSelectedTrend] = useState(null);
+  const [showStoryModal, setShowStoryModal] = useState(false);
+  const [selectedStoryId, setSelectedStoryId] = useState(null);
   const handleCreatePost = () => {
     setIsCreatePostOpen(true);
   };
@@ -89,10 +91,20 @@ const handleSearch = async (query) => {
       setSearchLoading(false);
     }
   };
-  const handleStoryClick = (storyId) => {
-    console.log("Story clicked:", storyId);
+const handleStoryClick = (storyId) => {
+    setSelectedStoryId(storyId);
+    setShowStoryModal(true);
   };
 
+  const handleStoryModalClose = () => {
+    setShowStoryModal(false);
+    setSelectedStoryId(null);
+  };
+
+  const handleStoryViewed = (storyId) => {
+    // Story viewing is handled by the service, this is for UI feedback
+    console.log("Story viewed:", storyId);
+  };
 const handleTrendClick = (hashtag) => {
     const trend = trends.find(t => t.hashtag === hashtag);
     setSelectedTrend(trend);
@@ -127,11 +139,16 @@ const handleUserClick = (userId) => {
 
           {/* Main Content */}
           <div className="lg:col-span-6 space-y-6">
-            <StoriesBar 
+<StoriesBar 
               stories={stories}
               onStoryClick={handleStoryClick}
+              currentUser={currentUser}
+              showStoryModal={showStoryModal}
+              selectedStoryId={selectedStoryId}
+              onStoryModalClose={handleStoryModalClose}
+              onStoryViewed={handleStoryViewed}
             />
-<Feed 
+<Feed
               onPostLike={handlePostLike}
               onPostComment={handlePostComment}
               onPostShare={handlePostShare}
