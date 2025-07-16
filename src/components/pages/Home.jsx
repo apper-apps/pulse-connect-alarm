@@ -1,23 +1,23 @@
 import React, { useState } from "react";
-import { cn } from "@/utils/cn";
 import { motion } from "framer-motion";
-import Header from "@/components/organisms/Header";
-import Feed from "@/components/organisms/Feed";
-import StoriesBar from "@/components/organisms/StoriesBar";
-import StatsCard from "@/components/organisms/StatsCard";
-import TrendingCard from "@/components/organisms/TrendingCard";
+import { useHomeData } from "@/hooks/useHomeData";
 import SuggestedUsers from "@/components/organisms/SuggestedUsers";
 import ActiveUsers from "@/components/organisms/ActiveUsers";
-import CreatePostModal from "@/components/organisms/CreatePostModal";
+import StatsCard from "@/components/organisms/StatsCard";
 import ChatModal from "@/components/organisms/ChatModal";
-import { useHomeData } from "@/hooks/useHomeData";
+import CreatePostModal from "@/components/organisms/CreatePostModal";
+import Feed from "@/components/organisms/Feed";
+import TrendingCard from "@/components/organisms/TrendingCard";
+import Header from "@/components/organisms/Header";
+import StoriesBar from "@/components/organisms/StoriesBar";
+import { cn } from "@/utils/cn";
 
 const Home = ({ className, ...props }) => {
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [followingUsers, setFollowingUsers] = useState([]);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [selectedChatUser, setSelectedChatUser] = useState(null);
-  
+  const [searchQuery, setSearchQuery] = useState("");
   const {
     currentUser,
     stats,
@@ -46,10 +46,10 @@ const Home = ({ className, ...props }) => {
     );
   };
 
-  const handleSearch = (query) => {
+const handleSearch = (query) => {
+    setSearchQuery(query || "");
     console.log("Search query:", query);
   };
-
   const handleStoryClick = (storyId) => {
     console.log("Story clicked:", storyId);
   };
@@ -91,7 +91,8 @@ const handleUserClick = (userId) => {
               stories={stories}
               onStoryClick={handleStoryClick}
             />
-            <Feed 
+<Feed 
+              searchQuery={searchQuery}
               onPostLike={(postId) => console.log("Post liked:", postId)}
               onPostComment={(postId) => console.log("Post commented:", postId)}
               onPostShare={(postId) => console.log("Post shared:", postId)}

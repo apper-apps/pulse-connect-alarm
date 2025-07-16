@@ -105,7 +105,37 @@ async share(postId) {
     // Attach user data to comments
     return comments.map(comment => ({
       ...comment,
-      user: userData.find(user => user.Id === comment.userId)
+user: userData.find(user => user.Id === comment.userId)
     }));
+  },
+
+  async search(query) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    if (!query || query.trim() === "") {
+      return [];
+    }
+    
+    const lowercaseQuery = query.toLowerCase();
+    
+    // Filter posts by content, hashtags, or user
+    const filteredPosts = posts.filter(post => {
+      const user = userData.find(user => user.Id === post.userId);
+      const content = post.content?.toLowerCase() || "";
+      const hashtags = post.hashtags?.join(" ").toLowerCase() || "";
+      const userName = user ? `${user.displayName} ${user.username}`.toLowerCase() : "";
+      
+      return content.includes(lowercaseQuery) || 
+             hashtags.includes(lowercaseQuery) || 
+             userName.includes(lowercaseQuery);
+    });
+    
+    // Attach user data and sort by timestamp
+    const postsWithUsers = filteredPosts.map(post => ({
+      ...post,
+      user: userData.find(user => user.Id === post.userId)
+    }));
+    
+    return postsWithUsers.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   }
 };

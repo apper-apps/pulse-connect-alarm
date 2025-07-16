@@ -1,5 +1,4 @@
 import userData from "@/services/mockData/users.json";
-
 export const UserService = {
   async getCurrentUser() {
     await new Promise(resolve => setTimeout(resolve, 300));
@@ -30,12 +29,10 @@ export const UserService = {
     await new Promise(resolve => setTimeout(resolve, 200));
     return { success: true };
   },
-
 async unfollow(userId) {
     await new Promise(resolve => setTimeout(resolve, 200));
     return { success: true };
   },
-
   async sendMessage(userId, message) {
     await new Promise(resolve => setTimeout(resolve, 300));
     return { 
@@ -86,7 +83,7 @@ async unfollow(userId) {
         timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
         isRead: true
       },
-      {
+{
         Id: 3,
         senderId: userId,
         receiverId: 1,
@@ -95,5 +92,25 @@ async unfollow(userId) {
         isRead: true
       }
     ];
+  },
+
+  async search(query) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    if (!query || query.trim() === "") {
+      return [];
+    }
+    
+    const lowercaseQuery = query.toLowerCase();
+    
+    return userData.filter(user => {
+      const displayName = user.displayName?.toLowerCase() || "";
+      const username = user.username?.toLowerCase() || "";
+      const bio = user.bio?.toLowerCase() || "";
+      
+      return displayName.includes(lowercaseQuery) || 
+             username.includes(lowercaseQuery) || 
+             bio.includes(lowercaseQuery);
+    });
   }
 };
