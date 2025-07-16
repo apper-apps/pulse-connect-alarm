@@ -11,8 +11,7 @@ const Feed = ({
   className, 
   onPostLike, 
   onPostComment, 
-  onPostShare,
-  ...props 
+  onPostShare
 }) => {
 const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,27 +77,35 @@ const handleComment = async (postId, commentData) => {
     return <Error message={error} onRetry={loadPosts} />;
   }
 
-  if (posts.length === 0) {
-    return <Empty />;
+if (posts.length === 0) {
+    return <Empty message="No posts yet" />;
   }
 
-return (
-    <div className={cn("space-y-6", className)} {...props}>
-      {posts.map((post, index) => (
-        <motion.div
-          key={post.id || post.Id || index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 * index }}
-        >
-          <PostCard
-            post={post}
-            onLike={handleLike}
-            onComment={handleComment}
-            onShare={handleShare}
-          />
-        </motion.div>
-      ))}
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-2 mb-6">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+          <div className="w-4 h-4 bg-white rounded-full"></div>
+        </div>
+        <h2 className="text-xl font-display font-semibold text-gray-800">Latest Posts</h2>
+      </div>
+      <div className={cn("space-y-6", className)}>
+        {posts.map((post, index) => (
+          <motion.div
+            key={post.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * index }}
+          >
+            <PostCard
+              post={post}
+              onLike={handleLike}
+              onComment={handleComment}
+              onShare={handleShare}
+            />
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -13,11 +13,6 @@ import StoriesBar from "@/components/organisms/StoriesBar";
 import { cn } from "@/utils/cn";
 
 const Home = ({ className, ...props }) => {
-  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-  const [followingUsers, setFollowingUsers] = useState([]);
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const [selectedChatUser, setSelectedChatUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const {
     currentUser,
     stats,
@@ -30,12 +25,32 @@ const Home = ({ className, ...props }) => {
     refetch
   } = useHomeData();
 
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [selectedChatUser, setSelectedChatUser] = useState(null);
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handleCreatePost = () => {
     setIsCreatePostOpen(true);
   };
 
-  const handlePostCreated = () => {
-    refetch();
+const handlePostCreated = () => {
+    if (refetch) {
+      refetch();
+    }
+  };
+
+  const handlePostLike = (postId) => {
+    console.log("Post liked:", postId);
+  };
+
+  const handlePostComment = (postId, comment) => {
+    console.log("Post commented:", postId, comment);
+  };
+
+  const handlePostShare = (postId) => {
+    console.log("Post shared:", postId);
   };
 
   const handleFollowToggle = (userId) => {
@@ -92,21 +107,21 @@ const handleUserClick = (userId) => {
               onStoryClick={handleStoryClick}
             />
 <Feed 
-              searchQuery={searchQuery}
-              onPostLike={(postId) => console.log("Post liked:", postId)}
-              onPostComment={(postId) => console.log("Post commented:", postId)}
-              onPostShare={(postId) => console.log("Post shared:", postId)}
+              onPostLike={handlePostLike}
+              onPostComment={handlePostComment}
+              onPostShare={handlePostShare}
+              className="flex-1"
             />
           </div>
-
-          {/* Right Sidebar */}
-          <div className="lg:col-span-3 space-y-6">
+          
+{/* Right Sidebar */}
+          <div className="hidden xl:block xl:w-80 space-y-6">
             <SuggestedUsers 
               users={suggestedUsers}
               onFollowToggle={handleFollowToggle}
               followingUsers={followingUsers}
             />
-<ActiveUsers 
+            <ActiveUsers 
               activeUsers={activeUsers}
               onUserClick={handleUserClick}
               onChatClick={handleChatClick}
@@ -114,7 +129,6 @@ const handleUserClick = (userId) => {
           </div>
         </div>
       </div>
-
 <CreatePostModal
         isOpen={isCreatePostOpen}
         onClose={() => setIsCreatePostOpen(false)}
