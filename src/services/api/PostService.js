@@ -1,10 +1,5 @@
-import React from "react";
-import Error from "@/components/ui/Error";
-import userData, { PostService } from "@/services/mockData/users.json";
-import { PostService } from "@/services/mockData/trends.json";
-import { PostService } from "@/services/mockData/stories.json";
-import { PostService } from "@/services/mockData/notifications.json";
-import postData, { PostService } from "@/services/mockData/posts.json";
+import userData from "@/services/mockData/users.json";
+import postData from "@/services/mockData/posts.json";
 
 let posts = [...postData];
 
