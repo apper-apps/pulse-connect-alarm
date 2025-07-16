@@ -1,5 +1,10 @@
-import postData from "@/services/mockData/posts.json";
-import userData from "@/services/mockData/users.json";
+import React from "react";
+import Error from "@/components/ui/Error";
+import userData, { PostService } from "@/services/mockData/users.json";
+import { PostService } from "@/services/mockData/trends.json";
+import { PostService } from "@/services/mockData/stories.json";
+import { PostService } from "@/services/mockData/notifications.json";
+import postData, { PostService } from "@/services/mockData/posts.json";
 
 let posts = [...postData];
 
@@ -54,12 +59,58 @@ export const PostService = {
     return { success: true };
   },
 
-  async share(postId) {
+async share(postId) {
     await new Promise(resolve => setTimeout(resolve, 200));
     const post = posts.find(p => p.Id === postId);
     if (post) {
       post.shares += 1;
     }
     return { success: true };
+  },
+
+  async addComment(postId, content) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    const post = posts.find(p => p.Id === postId);
+    if (!post) throw new Error('Post not found');
+    
+    // Initialize comments array if it doesn't exist
+    if (!post.commentsList) {
+      post.commentsList = [];
+    }
+    
+    const newComment = {
+      Id: Date.now(), // Simple ID generation for mock
+      postId,
+      content,
+      userId: 1, // Mock current user ID
+      timestamp: new Date().toISOString()
+    };
+    
+    post.commentsList.unshift(newComment);
+    post.comments += 1;
+    
+    // Attach user data to comment
+    const commentWithUser = {
+      ...newComment,
+      user: userData.find(user => user.Id === newComment.userId)
+    };
+    
+    return commentWithUser;
+  },
+
+  async getComments(postId) {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const post = posts.find(p => p.Id === postId);
+    if (!post) return [];
+    
+    const comments = post.commentsList || [];
+    
+    // Attach user data to comments
+    return comments.map(comment => ({
+      ...comment,
+      user: userData.find(user => user.Id === comment.userId)
+    }));
   }
 };

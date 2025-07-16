@@ -34,9 +34,8 @@ const PostActions = ({
     onLike?.(post.Id);
   };
 
-  const handleComment = () => {
+const handleComment = () => {
     onComment?.(post.Id);
-    toast.info("Comment feature coming soon!");
   };
 
   const handleShare = () => {

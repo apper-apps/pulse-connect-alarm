@@ -96,7 +96,7 @@ const PostCard = ({
         )}
       </div>
 
-      {/* Actions */}
+{/* Actions */}
       <PostActions
         post={post}
         onLike={onLike}

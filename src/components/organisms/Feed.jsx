@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { cn } from "@/utils/cn";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import PostCard from "@/components/organisms/PostCard";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import PostCard from "@/components/organisms/PostCard";
 import { PostService } from "@/services/api/PostService";
+import CommentModal from "@/components/organisms/CommentModal";
+import { cn } from "@/utils/cn";
 
 const Feed = ({ 
   className, 
@@ -14,10 +15,10 @@ const Feed = ({
   onPostShare,
   ...props 
 }) => {
-  const [posts, setPosts] = useState([]);
+const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [commentModal, setCommentModal] = useState({ isOpen: false, post: null });
   const loadPosts = async () => {
     try {
       setLoading(true);
@@ -44,7 +45,11 @@ const Feed = ({
     }
   };
 
-  const handleComment = async (postId) => {
+const handleComment = async (postId) => {
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+      setCommentModal({ isOpen: true, post });
+    }
     onPostComment?.(postId);
   };
 
@@ -69,24 +74,32 @@ const Feed = ({
     return <Empty />;
   }
 
-  return (
-    <div className={cn("space-y-6", className)} {...props}>
-      {posts.map((post, index) => (
-        <motion.div
-          key={post.Id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 * index }}
-        >
-          <PostCard
-            post={post}
-            onLike={handleLike}
-            onComment={handleComment}
-            onShare={handleShare}
-          />
-        </motion.div>
-      ))}
-    </div>
+return (
+    <>
+      <div className={cn("space-y-6", className)} {...props}>
+{posts.map((post, index) => (
+          <motion.div
+            key={post.id || post.Id || index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * index }}
+          >
+            <PostCard
+              post={post}
+              onLike={handleLike}
+              onComment={handleComment}
+              onShare={handleShare}
+            />
+          </motion.div>
+        ))}
+      </div>
+      
+      <CommentModal
+        isOpen={commentModal.isOpen}
+        post={commentModal.post}
+        onClose={() => setCommentModal({ isOpen: false, post: null })}
+      />
+    </>
   );
 };
 
